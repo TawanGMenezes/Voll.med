@@ -28,7 +28,7 @@ public class MedicosController {
 
     @GetMapping
     public Page<DadosListagemMedico> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
-        return repository.findAll(paginacao).map(DadosListagemMedico::new);
+        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);
     }
 
     @PutMapping
@@ -37,5 +37,13 @@ public class MedicosController {
         Medico medico = repository.findById(dados.id()).orElseThrow(() -> new EntityNotFoundException("Medico não encontrado"));
         medico.atualizarInformacoes(dados);
 
+
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluir(@PathVariable Long id){
+       Medico medico= repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Medico não encontrado"));
+       medico.excluir();
     }
 }
