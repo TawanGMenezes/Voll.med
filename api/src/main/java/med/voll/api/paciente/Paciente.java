@@ -37,4 +37,16 @@ public class Paciente {
         this.cpf = dados.cpf();
         this.endereco = new Endereco(dados.endereco());
     }
+
+    public void atualizarInformacoes(DadosAtualizacaoPacientes dados) {
+        if(dados.nome() != null) {
+            this.nome = dados.nome();
+        }
+        if(dados.telefone() != null) {
+            this.telefone = dados.telefone();
+        }
+        if(dados.endereco() != null) {
+            this.endereco.atualizarInformacoes(dados.endereco());
+        }
+    }
 }

@@ -1,13 +1,14 @@
 package med.voll.api.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import med.voll.api.paciente.DadosCadastroPacientes;
-import med.voll.api.paciente.DadosListagemPaciente;
-import med.voll.api.paciente.Paciente;
-import med.voll.api.paciente.PacienteRepository;
+import med.voll.api.paciente.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.Pageable;
+
+import org.springframework.data.web.PageableDefault;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,18 @@ public class PacienteController {
     }
 
     @GetMapping
-    public Page<DadosListagemPaciente> listar(Pageable paginacao) {
+    public Page<DadosListagemPaciente> listar(@PageableDefault(sort = {"nome"}, size = 10) Pageable paginacao) {
           return repository.findAll(paginacao).map(DadosListagemPaciente::new);
     }
+
+    @PutMapping
+    @Transactional
+    public void atualizar(@RequestBody @Valid DadosAtualizacaoPacientes dados) {
+        Paciente paciente = repository.findById(dados.id()).orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
+        paciente.atualizarInformacoes(dados);
+
+    }
+
+
+
 }
